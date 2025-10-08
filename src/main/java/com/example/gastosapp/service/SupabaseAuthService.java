@@ -58,6 +58,7 @@ public class SupabaseAuthService {
     /**
      * Login o registro usando un token de Supabase.
      * El frontend debe enviar el access_token de Supabase tras el OAuth.
+     * No el de Google.
      */
     public AuthResponse loginWithSupabase(String accessToken) {
         if (accessToken == null || accessToken.isBlank()) {
