@@ -32,12 +32,12 @@ public class ExpenseService {
         Expense e = new Expense();
         e.setId(UUID.randomUUID().toString());
         e.setUserId(userId);
-        LocalDate date = LocalDate.parse(dto.date(), DF);
+        LocalDate date = LocalDate.parse(dto.getDate(), DF);
         e.setDate(date);
-        e.setDescription(dto.description());
-        e.setAmount(dto.amount());
-        e.setCategory(dto.category());
-        e.setPaymentMethod(dto.paymentMethod());
+        e.setDescription(dto.getDescription());
+        e.setAmount(dto.getAmount());
+        e.setCategory(dto.getCategory());
+        e.setPaymentMethod(dto.getPaymentMethod());
         e.setYearMonth(String.format("%04d-%02d", year, month));
         return expenseRepository.save(e);
     }

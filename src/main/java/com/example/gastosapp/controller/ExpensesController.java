@@ -39,13 +39,13 @@ public class ExpensesController {
     }
 
     @PostMapping("/{year}/{month}")
-    public ResponseEntity<?> create(@PathVariable int year, @PathVariable int month,
+    public ResponseEntity<Void> create(@PathVariable int year, @PathVariable int month,
             @Valid @RequestBody CreateExpenseDto dto,
             HttpServletRequest req) {
         String userId = getUserIdOrThrow(req);
-        Expense e = expenseService.createExpense(userId, year, month, dto);
+        expenseService.createExpense(userId, year, month, dto);
         log.info("Expense created by {} for {}/{}", userId, month, year);
-        return ResponseEntity.status(HttpStatus.CREATED).body(e);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{year}/{month}/{expenseId}")
@@ -65,8 +65,8 @@ public class ExpensesController {
             @Valid @RequestBody UpdateExpenseDto dto,
             HttpServletRequest req) {
         String userId = getUserIdOrThrow(req);
-        Expense updated = expenseService.updateExpense(userId, expenseId, dto);
-        return ResponseEntity.ok(updated);
+        expenseService.updateExpense(userId, expenseId, dto);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @DeleteMapping("/{year}/{month}/{expenseId}")
