@@ -73,9 +73,8 @@ public class ExpensesController {
     }
 
     // Eliminar gasto
-    @DeleteMapping("/{year}/{month}/{expenseId}")
-    public ResponseEntity<?> delete(@PathVariable int year, @PathVariable int month,
-            @PathVariable String expenseId, HttpServletRequest req) {
+    @DeleteMapping("/{expenseId}")
+    public ResponseEntity<?> delete(@PathVariable String expenseId, HttpServletRequest req) {
         String userId = getUserIdOrThrow(req);
         expenseService.deleteExpense(userId, expenseId);
         log.info("Expense {} deleted by {}", expenseId, userId);
