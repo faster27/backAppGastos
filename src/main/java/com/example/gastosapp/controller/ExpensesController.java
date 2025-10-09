@@ -82,15 +82,6 @@ public class ExpensesController {
         return ResponseEntity.noContent().build();
     }
 
-    // Inicializar mes
-    @PostMapping("/{year}/{month}/init")
-    public ResponseEntity<?> initMonth(@PathVariable int year, @PathVariable int month, HttpServletRequest req) {
-        String userId = getUserIdOrThrow(req);
-        expenseService.initMonth(userId, year, month);
-        return ResponseEntity.ok(Map.of("message", "initialized"));
-    }
-
-    // Buscar gastos
     @GetMapping("/search")
     public ResponseEntity<?> searchExpenses(
             @RequestParam(required = false) String category,
