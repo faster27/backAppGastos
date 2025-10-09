@@ -1,15 +1,12 @@
 package com.example.gastosapp.security;
 
-import com.example.gastosapp.repository.RevokedTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,9 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
-
-    @Autowired
-    private RevokedTokenRepository revokedTokenRepository;
 
     // ⚠️ Debe coincidir con el "JWT secret" de tu proyecto Supabase
     @Value("${SUPABASE_JWT_SECRET}")
@@ -40,12 +34,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String token = header.substring(7);
 
             try {
-                // ✅ Verificar si el token fue revocado
-                if (revokedTokenRepository.existsByToken(token)) {
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token revoked");
-                    return;
-                }
-
                 // ✅ Validar token y extraer el claim "sub" (el userId del usuario de Supabase)
                 String userId = getUserIdFromToken(token);
 
