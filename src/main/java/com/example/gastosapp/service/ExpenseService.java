@@ -18,7 +18,5 @@ public interface ExpenseService {
 
     void deleteExpense(String userId, String expenseId);
 
-    void initMonth(String userId, int year, int month);
-    
     List<Expense> searchExpenses(String userId, String category, String paymentMethod);
 }

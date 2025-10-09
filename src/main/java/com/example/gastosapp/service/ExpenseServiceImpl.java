@@ -58,10 +58,6 @@ public class ExpenseServiceImpl implements ExpenseService {
         expenseRepository.delete(e);
     }
 
-    public void initMonth(String userId, int year, int month) {
-        // ejemplo sencillo: no-op o crear filas base si necesitas
-    }
-
     public List<Expense> getByYearMonthDay(String userId, String ymd, String date) {
         if (date == null || date.isBlank() || ymd == null || ymd.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Date and ymd are required");
