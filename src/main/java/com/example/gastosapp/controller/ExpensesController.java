@@ -23,6 +23,7 @@ public class ExpensesController {
     @Autowired
     private ExpenseService expenseService;
 
+    // Obtener usuario o lanzar excepción
     private String getUserIdOrThrow(HttpServletRequest req) {
         String userId = (String) req.getAttribute("userId");
         if (userId == null || userId.isBlank()) {
@@ -31,13 +32,15 @@ public class ExpensesController {
         return userId;
     }
 
-    @GetMapping("/summary/{year}/{month}")
-    public ResponseEntity<?> listByMonth(@PathVariable int year, @PathVariable int month, HttpServletRequest req) {
+    // Listar gastos por mes Y ear M onth D ay = year | month | day
+    @GetMapping("/summary/{ymd}/{date}")
+    public ResponseEntity<?> listByMonth(@PathVariable String ymd, @PathVariable String date, HttpServletRequest req) {
         String userId = getUserIdOrThrow(req);
-        List<Expense> expenses = expenseService.getByMonth(userId, year, month);
-        return ResponseEntity.ok(Map.of("year", year, "month", month, "expenses", expenses));
+        List<Expense> expenses = expenseService.getByYearMonthDay(userId, ymd, date);
+        return ResponseEntity.ok(expenses);
     }
 
+    // Crear gasto
     @PostMapping("/create")
     public ResponseEntity<?> create(
             @Valid @RequestBody CreateExpenseDto dto,
@@ -47,17 +50,18 @@ public class ExpensesController {
         return ResponseEntity.status(HttpStatus.CREATED).body(e);
     }
 
-    @GetMapping("/{year}/{month}/{expenseId}")
-    public ResponseEntity<?> getOne(@PathVariable int year, @PathVariable int month,
-            @PathVariable String expenseId, HttpServletRequest req) {
+    // Obtener gasto por id
+    @GetMapping("/getOne/{expenseId}")
+    public ResponseEntity<?> getOne(@PathVariable String expenseId, HttpServletRequest req) {
         String userId = getUserIdOrThrow(req);
-        Expense e = expenseService.getById(userId, expenseId);
-        if (e == null) {
+        Expense expense = expenseService.getById(userId, expenseId);
+        if (expense == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Expense not found");
         }
-        return ResponseEntity.ok(e);
+        return ResponseEntity.ok(expense);
     }
 
+    // Actualizar gasto
     @PutMapping("/update/{expenseId}")
     public ResponseEntity<?> update(
             @PathVariable String expenseId,
@@ -68,6 +72,7 @@ public class ExpensesController {
         return ResponseEntity.ok(updated);
     }
 
+    // Eliminar gasto
     @DeleteMapping("/{year}/{month}/{expenseId}")
     public ResponseEntity<?> delete(@PathVariable int year, @PathVariable int month,
             @PathVariable String expenseId, HttpServletRequest req) {
@@ -77,6 +82,7 @@ public class ExpensesController {
         return ResponseEntity.noContent().build();
     }
 
+    // Inicializar mes
     @PostMapping("/{year}/{month}/init")
     public ResponseEntity<?> initMonth(@PathVariable int year, @PathVariable int month, HttpServletRequest req) {
         String userId = getUserIdOrThrow(req);
@@ -84,15 +90,15 @@ public class ExpensesController {
         return ResponseEntity.ok(Map.of("message", "initialized"));
     }
 
+    // Buscar gastos
     @GetMapping("/search")
     public ResponseEntity<?> searchExpenses(
-            @RequestParam(required = false) String q,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String paymentMethod,
             HttpServletRequest req) {
 
         String userId = getUserIdOrThrow(req);
-        List<Expense> expenses = expenseService.searchExpenses(userId, q, category, paymentMethod);
+        List<Expense> expenses = expenseService.searchExpenses(userId, category, paymentMethod);
         return ResponseEntity.ok(expenses);
     }
 }
