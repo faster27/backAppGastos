@@ -38,13 +38,12 @@ public class ExpensesController {
         return ResponseEntity.ok(Map.of("year", year, "month", month, "expenses", expenses));
     }
 
-    @PostMapping("/{year}/{month}")
-    public ResponseEntity<?> create(@PathVariable int year, @PathVariable int month,
+    @PostMapping("/create")
+    public ResponseEntity<?> create(
             @Valid @RequestBody CreateExpenseDto dto,
             HttpServletRequest req) {
         String userId = getUserIdOrThrow(req);
-        Expense e = expenseService.createExpense(userId, year, month, dto);
-        log.info("Expense created by {} for {}/{}", userId, month, year);
+        Expense e = expenseService.createExpense(userId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(e);
     }
 
@@ -59,8 +58,8 @@ public class ExpensesController {
         return ResponseEntity.ok(e);
     }
 
-    @PutMapping("/{year}/{month}/{expenseId}")
-    public ResponseEntity<?> update(@PathVariable int year, @PathVariable int month,
+    @PutMapping("/update/{expenseId}")
+    public ResponseEntity<?> update(
             @PathVariable String expenseId,
             @Valid @RequestBody UpdateExpenseDto dto,
             HttpServletRequest req) {

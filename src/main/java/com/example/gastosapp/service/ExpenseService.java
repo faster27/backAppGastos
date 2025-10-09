@@ -27,7 +27,7 @@ public class ExpenseService {
         return expenseRepository.findByUserIdAndYearMonth(userId, ym);
     }
 
-    public Expense createExpense(String userId, int year, int month, CreateExpenseDto dto) {
+    public Expense createExpense(String userId, CreateExpenseDto dto) {
         if (userId == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         Expense e = new Expense();
         e.setId(UUID.randomUUID().toString());
@@ -38,7 +38,7 @@ public class ExpenseService {
         e.setAmount(dto.amount());
         e.setCategory(dto.category());
         e.setPaymentMethod(dto.paymentMethod());
-        e.setYearMonth(String.format("%04d-%02d", year, month));
+        e.setYearMonth(String.format("%04d-%02d", date.getYear(), date.getMonthValue()));
         return expenseRepository.save(e);
     }
 
